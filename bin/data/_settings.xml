@@ -1,0 +1,26 @@
+<controls>
+    <Toggle_8_Connected>
+        <name>8 Connected</name>
+        <value>0</value>
+    </Toggle_8_Connected>
+    <Toggle_use_sqrtf>
+        <name>use sqrtf</name>
+        <value>0</value>
+    </Toggle_use_sqrtf>
+    <SliderFloat_Eucledian_Dist_weight>
+        <name>Eucledian Dist weight</name>
+        <value>0.500000000</value>
+    </SliderFloat_Eucledian_Dist_weight>
+    <SliderFloat_road_Cost_Gain>
+        <name>road Cost Gain</name>
+        <value>1.000000000</value>
+    </SliderFloat_road_Cost_Gain>
+    <SliderFloat_extra_cost_per_step>
+        <name>extra cost per step</name>
+        <value>0.000000000</value>
+    </SliderFloat_extra_cost_per_step>
+    <SliderInt_max_Iterations>
+        <name>max Iterations</name>
+        <value>22638</value>
+    </SliderInt_max_Iterations>
+</controls>
