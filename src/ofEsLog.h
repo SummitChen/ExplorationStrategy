@@ -54,6 +54,9 @@ public:
     void setTravelDistance(float distance);
     float  getTravelDistance();
     
+    void setInitialPoint(int number);
+    int  getInitialPoint();
+    
     void setExploredPath(const std::vector<ofVec2f>& vecpath);
     std::vector<ofVec2f>& getExplorationPath();
     
@@ -73,6 +76,8 @@ protected:
     string mapName;
     string strategyName;
     string playerName;
+    
+    int    initialPoint;
     
     std::vector<ofVec2f> explorePath;
     

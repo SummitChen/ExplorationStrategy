@@ -269,7 +269,7 @@ unsigned char esStrategy::evaluateEdgePoint(ofxTileMap *dynamicMap, KERNEL::Posi
     if ( sumObstacle == sumUnknown &&
         sumObstacle == 0) {
         return WALKABLE;
-    }else if( sumObstacle >= sumUnknown){
+    }else if( sumObstacle != 0){
         return UN_WALKABLE;
     }else{
         return UN_KNOWN;
@@ -349,13 +349,31 @@ float esStrategy::calculateFeaPercentage(ofxTileMap *dynamicMap, Robot &scout, o
         }
     }
     
-    if ( sum == 0) {
+    if ( sum == 0 ) {
         return 0;
     }else{
         double sumD = (double)sum;
         double sumExplored = (double)(sum - sumUnexplored);
         return ( sumResource * sumUnexplored) / ( sumD * sumExplored );
     }
+    
+#if 0
+    if ( sum == 0 || sum == sumUnexplored) {
+        return 0;
+    }else{
+        double sumD = (double)sum;
+        double sumExplored = (double)(sum - sumUnexplored);
+        double exploredPercent = sumResource / sumExplored;
+        if ( exploredPercent < 0.1) {
+            return 4 * ( sumResource * sumUnexplored) / ( sumD * sumExplored );
+        }else if( exploredPercent >= 0.1 && exploredPercent <= 0.5){
+            return 2 * ( sumResource * sumUnexplored) / ( sumD * sumExplored );
+        }else{
+            return ( sumResource * sumUnexplored) / ( sumD * sumExplored );
+        }
+        
+    }
+#endif
 }
 
 bool esStrategy::isReachable(std::set<esPolygon *> polygons, KERNEL::Position p1, KERNEL::Position p2){
@@ -371,4 +389,33 @@ bool esStrategy::isReachable(std::set<esPolygon *> polygons, KERNEL::Position p1
     }
     
     return false;
+}
+
+esStrategy::~esStrategy(){
+    printf("call esStrategy destructor!\n");
+    visitNodes.clear();
+    proVertexSet.clear();
+}
+
+void esStrategy::setAlgorithmConfig(algorithmConfig confi){
+    config = confi;
+}
+
+KERNEL::Position esStrategy::searchWalkableNeighbor(ofxTileMap *dynamicMap, KERNEL::Position original){
+    if ( dynamicMap->getTileSafe(original.x, original.y) == WALKABLE) {
+        return original;
+    }else{
+        for(int i = original.x - 2; i <= original.x + 2; i ++){
+            for (int j = original.y - 2; j <= original.y + 2; j ++) {
+                if ( i < 0 || i > dynamicMap->getWidth() || j < 0 || j > dynamicMap->getHeight()) {
+                    continue;
+                }else{
+                    if (dynamicMap->getTileSafe(i, j) == WALKABLE) {
+                        return KERNEL::Position(i, j);
+                    }
+                }
+            }
+        }
+        return original;
+    }
 }

@@ -18,6 +18,7 @@ public:
     esPolygon();
     esPolygon(esPolygon const & b);
     
+    
     double           getArea() const;
     double           getPerimeter() const;
     

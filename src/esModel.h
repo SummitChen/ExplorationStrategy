@@ -16,8 +16,14 @@
 #include "ofEsLog.h"
 #include "ofEssettings.h"
 #include "esPolygon.h"
+#include "Position.h"
 
 #define MAXNUM 65535000
+
+struct OriginStruct{
+    int originNumber;
+    KERNEL::Position pos;
+};
 
 class esModel{
 
@@ -42,6 +48,8 @@ public:
     const ofVec2f&     getTarget();
     
     bool               isSimulationEnd();
+    
+    ~esModel();
     
     
 protected:
@@ -73,6 +81,8 @@ protected:
     float              calPolygonPerimeter(esPolygon p);
     void               calExploredPerimeter();
     
+    void               readOriginFile(string mapPath);
+    
     //--To classify vertices of boarder polygons of explored areas
     //--by analyzing the 8-connected points.
     unsigned char evaluateEdgePoint(ofxTileMap* dynamicMap, KERNEL::Position& vertex);
@@ -86,6 +96,8 @@ protected:
     string             mapPath;
     //-Strategy
     string             strategy;
+    unsigned long long beginTime;
+    unsigned long long endTime;
     unsigned long long duration;
     
     //-Path finding
@@ -116,9 +128,15 @@ protected:
     float              segPerimeter;
     float              exploredPerimeter;
     float              segExploratinoPercentage;
+    //- travel time
+    double              travelTimeEach;
+    bool               goalAchieved;
     
-    
+    std::vector<OriginStruct> originVec;
+    unsigned int       originAccout;
+
     bool               simulationEnd;
+    algorithmConfig    algorithmConfig;
 
 };
 

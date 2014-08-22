@@ -7,8 +7,11 @@
 //
 
 #include "esStrRandom.h"
+#include "esMapAnalysis.h"
 
 void esStrRandom::calCandidatePosition(ofxTileMap *solidMap, ofxTileMap *dynamicMap, bool &resetTarget, ofVec2f& target, Robot& scout, ofxMapRouting* routing){
+    
+    esMapAnalysis::getInstance()->analyzeExploredArea(dynamicMap);
 
     int next_pos_x = rand() % dynamicMap->getWidth();
     int next_pos_y = rand() % dynamicMap->getHeight();

@@ -110,8 +110,6 @@ namespace KERNEL
                 this->data[ i * this->getHeight() + j] = data[ i * this->getHeight() + j];
             }
         }
-        
-        //this->data = data;
     }
     
 

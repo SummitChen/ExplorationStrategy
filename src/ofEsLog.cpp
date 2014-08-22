@@ -131,6 +131,9 @@ void ofEsLog::save(string fileName){
     XML.addChild("PLAYER");
     XML.setValue("//PLAYER", ofToString(playerName));
     
+    XML.addChild("ORIGIN");
+    XML.setValue("//ORIGIN", ofToString(initialPoint));
+    
     XML.setTo("//EXPLORATION");
     XML.addChild("PATH");
     XML.setTo("PATH[0]");
@@ -191,6 +194,14 @@ void ofEsLog::setDuration(float time){
 
 float ofEsLog::getDuration(){
     return duration;
+}
+
+void ofEsLog::setInitialPoint(int number){
+    initialPoint = number;
+}
+
+int ofEsLog::getInitialPoint(){
+    return initialPoint;
 }
 
 void ofEsLog::setGridMappingPercent(float percentage){

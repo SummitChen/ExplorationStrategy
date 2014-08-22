@@ -27,8 +27,8 @@ void esStrFrontierbased::calCandidatePosition(ofxTileMap *solidMap, ofxTileMap *
     std::vector<pos2>    res;
     int                  travelDistance;
     
-    alpha = 0.4;
-    beta = 0.6;
+    alpha = 0.3;
+    beta = 0.7;
     
     double               tileExploredUtility = 0.0;
     double               segExploredUtility = 0.0;
@@ -73,7 +73,7 @@ void esStrFrontierbased::calCandidatePosition(ofxTileMap *solidMap, ofxTileMap *
         }
         if ((*it)->getHoles().size() != 0) {
             for (unsigned int j = 0; j < (*it)->getHoles().size(); ++j) {
-                for (unsigned int k = 0; k < (*it)->getHoles()[j].pointSet.size(); k ++) {
+                for (unsigned int k = 0; k < (*it)->getHoles()[j].pointSet.size(); k += 2) {
                     globleCanPos.push_back((*it)->getHoles()[j].pointSet[k]);
                 }
             }
@@ -182,10 +182,31 @@ void esStrFrontierbased::utilityDecision(std::map<double, KERNEL::Position> &res
         tileExploredUtility = calculateTilePercentage(exploredMap, scoutBot, candidatePos);
         segExploredUtility = calculateSegPercentage(exploredMap, scoutBot, candidatePos);
         
+        
         utilityComponent = 0.5 * tileExploredUtility + 0.5 * segExploredUtility;
         //utilityComponent = tileExploredUtility;
         
         sumEvaluation = alpha * costComponent + beta * utilityComponent;
+        
+        if ( fabs((config.getGrid() + config.getSegment()) - 1.0) < 0.002) {
+            
+            utilityComponent = config.getGrid() * tileExploredUtility + config.getSegment() * segExploredUtility ;
+            
+        }else{
+            
+            utilityComponent = 0.5 * tileExploredUtility + 0.5 * segExploredUtility;
+            
+        }
+        
+        if ( fabs((config.getAlpha() + config.getBeta()) - 1.0) < 0.002 ) {
+            
+            sumEvaluation = config.getAlpha() * costComponent + config.getBeta() * utilityComponent;
+        
+        }else{
+        
+            sumEvaluation = 0.4 * costComponent + 0.6 * utilityComponent;
+        
+        }
         sumEvaluation = -sumEvaluation;
         
         resoultMap.insert(std::pair<double, KERNEL::Position>(sumEvaluation, canPosVec[i]));

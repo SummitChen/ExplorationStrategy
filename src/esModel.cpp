@@ -10,6 +10,26 @@
 #include "esStrategy.h"
 #include "esMapAnalysis.h"
 
+esModel::~esModel(){
+    
+    printf("call esModel destructor!\n");
+    
+    if ( map != NULL) {
+        delete map;
+        map = NULL;
+    }
+    
+    if ( gridMap != NULL) {
+        delete gridMap;
+        gridMap = NULL;
+    }
+    
+    if ( routing != NULL) {
+        delete routing;
+        routing = NULL;
+    }
+}
+
 ofxTileMap* esModel::getStaticMap(){
     return map;
 }
@@ -125,6 +145,7 @@ void esModel::drawPath(){
 	
 	//ofSetColor(255);
 	ofDrawBitmapString("destination", target.x + 12, target.y + 3);
+    m.clear();
 }
 
 void esModel::drawInformation(){
@@ -157,6 +178,11 @@ void esModel::drawInformation(){
     }else{
         
         gridExplorationPercentage = gridMap->accFreeTile / ( map->accFreeTile * 1.0 ) * 100;
+        
+        if ( gridExplorationPercentage >= 100.0) {
+            gridExplorationPercentage = 100.0;
+        }
+        
         ofDrawBitmapString( "Exploration Percentage: " + ofToString( gridExplorationPercentage, 1) + "%\nstatic :" + ofToString( map->accFreeTile, 1) + " explored " + ofToString(gridMap->accFreeTile, 1),  ofGetWidth() + xoff, ofGetHeight() + yoff); yoff -= 2 * lineH;
     }
     
@@ -167,6 +193,11 @@ void esModel::drawInformation(){
     }else{
         
         resourceExplorationPercentage = gridMap->resourceTile / ( map->resourceTile * 1.0 ) * 100;
+        
+        if ( resourceExplorationPercentage >= 100.0) {
+            resourceExplorationPercentage = 100.0;
+        }
+        
         ofDrawBitmapString( "Resource Detection Percentage: " + ofToString( resourceExplorationPercentage, 1) + "%\nstatic :" + ofToString( map->resourceTile, 1) + " explored " + ofToString(gridMap->resourceTile, 1),  ofGetWidth() + xoff, ofGetHeight() + yoff); yoff -= 2 * lineH;
     }
     
@@ -177,6 +208,11 @@ void esModel::drawInformation(){
     }else{
         
         segExploratinoPercentage = exploredPerimeter / segPerimeter * 100;
+        
+        if ( segExploratinoPercentage >= 100.0) {
+            segExploratinoPercentage = 100.0;
+        }
+        
         ofDrawBitmapString( "Segment Detection Percentage: " + ofToString( segExploratinoPercentage, 1) + "%\nstatic :" + ofToString( segPerimeter, 1) + " explored " + ofToString(exploredPerimeter, 1),  ofGetWidth() + xoff, ofGetHeight() + yoff); yoff -= 2 * lineH;
     }
 }
@@ -224,6 +260,7 @@ void esModel::loadSettings(esConfiguration& config){
     sight = config.sight;
     speed = config.speed;
     duration = config.duration;
+    algorithmConfig = config.configHFrontier;
     
 }
 
@@ -233,6 +270,8 @@ bool esModel::isSimulationEnd(){
 
 void esModel::initialize(){
     simulationEnd = false;
+    travelTimeEach = 0.0;
+    goalAchieved = false;
 }
 
 float esModel::calPolygonPerimeter(esPolygon p){
@@ -241,8 +280,6 @@ float esModel::calPolygonPerimeter(esPolygon p){
     KERNEL::Position iter;
     KERNEL::Position trail;
     
-    //printf("------------polygon-----------------\n");
-    
     for (unsigned int i = 0; i < p.pointSet.size(); ++ i) {
         iter = p.pointSet[i];
         if ( i < p.pointSet.size() - 1) {
@@ -250,9 +287,8 @@ float esModel::calPolygonPerimeter(esPolygon p){
         }else{
             trail = p.pointSet[0];
         }
-        //printf("----- point 1 (%d, %d), ------- point 2 (%d, %d)--", iter.x, iter.y, trail.x, trail.y);
+        
         polyPerimeter += iter.getDistance(trail);
-        //printf("----- increasing distance %f, -----total distance %f \n", iter.getDistance(trail), polyPerimeter);
     }
     
     for (unsigned int j = 0; j < p.getHoles().size(); ++ j) {
@@ -268,6 +304,7 @@ void esModel::calExploredPerimeter(){
     exploredPerimeter = 0.0;
     
     std::vector<std::vector<edgeNode> > proVertexVec;
+    std::vector<edgeNode> calculatedVertex;
     
     std::set<esPolygon*> exploredPolygon = esMapAnalysis::getInstance()->getExploredPolygons();
     
@@ -309,11 +346,16 @@ void esModel::calExploredPerimeter(){
     for ( unsigned int i = 0; i < proVertexVec.size(); ++ i) {
         for ( unsigned int j = 0; j < proVertexVec[i].size(); ++ j) {
             iter = proVertexVec[i][j];
+            
+            for ( unsigned int k = 0; k < calculatedVertex.size(); ++ k) {
+                
+            }
             if (j < proVertexVec[i].size() - 1) {
                 trail = proVertexVec[i][j+1];
             }else{
                 trail = proVertexVec[i][0];
             }
+            
             if ( iter.explorationFlag == UN_WALKABLE
                 && trail.explorationFlag == UN_WALKABLE) {
                 exploredPerimeter += iter.pos.getDistance(trail.pos);
@@ -359,7 +401,7 @@ unsigned char esModel::evaluateEdgePoint(ofxTileMap *dynamicMap, KERNEL::Positio
     if ( sumObstacle == sumUnknown &&
         sumObstacle == 0) {
         return WALKABLE;
-    }else if( sumObstacle >= sumUnknown){
+    }else if( sumObstacle != 0){
         return UN_WALKABLE;
     }else{
         return UN_KNOWN;
@@ -368,4 +410,34 @@ unsigned char esModel::evaluateEdgePoint(ofxTileMap *dynamicMap, KERNEL::Positio
 
 void esModel::clearData(){
     esMapAnalysis::getInstance()->clearData();
+}
+
+void esModel::readOriginFile(string mapPath){
+
+    unsigned int found = mapPath.find_last_of(".");
+    string dataPath = mapPath.substr(0, found) + "_1.XML";
+    
+    ofXml XML;
+    
+    if ( XML.load(dataPath)) {
+        
+        if ( XML.exists("ORIGIN")) {
+            
+            XML.setTo("ORIGIN[0]");
+            
+            do{
+                if (XML.getName() == "ORIGIN") {
+                    
+                    OriginStruct origin;
+                    origin.pos.x = XML.getValue<int>("X");
+                    origin.pos.y = XML.getValue<int>("Y");
+                    origin.originNumber = XML.getValue<int>("SEQUENCE");
+                    
+                    originVec.push_back(origin);
+                }
+                
+            }while(XML.setToSibling());
+        }
+        
+    }
 }

@@ -18,6 +18,7 @@
 #include "DoubleList.h"
 #include <iostream>
 #include <fstream>
+#include "ofEsSettings.h"
 
 struct esNode{
     KERNEL::Position pos;
@@ -39,6 +40,9 @@ public:
     
     virtual void debugDraw(){}
     
+    void setAlgorithmConfig(algorithmConfig confi);
+    
+    ~esStrategy();
     
 protected:
     
@@ -63,6 +67,8 @@ protected:
     
     bool isReachable(std::set<esPolygon*> polygons, KERNEL::Position p1, KERNEL::Position p2);
     
+    KERNEL::Position searchWalkableNeighbor(ofxTileMap* dynamicMap, KERNEL::Position original);
+    
     
     NodeVec visitNodes;
     
@@ -70,6 +76,8 @@ protected:
     
     //-----------------debugging Log---------------
     std::fstream logFile;
+    
+    algorithmConfig config;
     
 };
 

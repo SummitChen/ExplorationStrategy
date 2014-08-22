@@ -14,7 +14,6 @@
 #include "esModel.h"
 #include "esStrategy.h"
 
-
 #ifndef ExplorationStrategy_exBotModel_h
 #define ExplorationStrategy_exBotModel_h
 
@@ -29,6 +28,7 @@ public:
     virtual void       rendering();
     
     void               saveLog();
+    void               clearData();
     
     //singleton pattern
     static esBotModel* getInstance();
@@ -40,13 +40,18 @@ protected:
     virtual void       selectNextPos();
     virtual void       initialize();
     
+    esBotModel();
+    ~esBotModel();
+    
     void               calSegPerimeter();
     
     static esBotModel* instance;
 
     esStrategy*        exploreStrategy;
     unsigned long long timeDuration;
+    
 
+    
 };
 
 #endif

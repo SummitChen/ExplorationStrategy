@@ -149,5 +149,15 @@ bool esPolygon::isInside(KERNEL::Position p) const{
             flag ^= (vertX[i]+( p_y - vertY[i])/(vertY[j]-vertY[i])*(vertX[j]-vertX[i]) < p_x);
         }
     }
+    
+    if (vertX != NULL) {
+        delete [] vertX;
+        vertX = NULL;
+    }
+    
+    if (vertY != NULL) {
+        delete [] vertY;
+        vertY = NULL;
+    }
     return flag;
 }

@@ -20,9 +20,8 @@ void esStrFBMC::calCandidatePosition(ofxTileMap *solidMap, ofxTileMap *dynamicMa
     KERNEL::Position scoutLocation = KERNEL::Position(scout.x(), scout.y());
     
     std::vector<KERNEL::Position> globleCanPos;
-    std::vector<KERNEL::Position> postGlobleCanPos;
-    std::map<double,KERNEL::Position> localCanPosMap;
-    std::map<double,KERNEL::Position> globleCanPosMap;
+    std::vector<KERNEL::Position> postGlobleCanPosArray1;
+    std::vector<KERNEL::Position> postGlobleCanPosArray2;
     std::map<double,KERNEL::Position> canPosMap;
     
     int searchLevel1 = 2 * scout.getSight();
@@ -47,6 +46,7 @@ void esStrFBMC::calCandidatePosition(ofxTileMap *solidMap, ofxTileMap *dynamicMa
     std::vector<KERNEL::Position> localCanPosLevel1;
     std::vector<KERNEL::Position> localCanPosLevel2;
     std::vector<KERNEL::Position> localCanPosLevel3;
+    std::vector<KERNEL::Position> localCanPosLevel3_2;
     std::vector<KERNEL::Position> localCanPosVec;
     
     std::vector<pos2>    res;
@@ -113,7 +113,7 @@ void esStrFBMC::calCandidatePosition(ofxTileMap *solidMap, ofxTileMap *dynamicMa
         }
         if ((*it)->getHoles().size() != 0) {
             for (unsigned int j = 0; j < (*it)->getHoles().size(); ++j) {
-                for (unsigned int k = 0; k < (*it)->getHoles()[j].pointSet.size(); k ++) {
+                for (unsigned int k = 0; k < (*it)->getHoles()[j].pointSet.size(); k += 2) {
                     polygonPoints.push_back((*it)->getHoles()[j].pointSet[k]);
                 }
             }
@@ -156,61 +156,97 @@ void esStrFBMC::calCandidatePosition(ofxTileMap *solidMap, ofxTileMap *dynamicMa
             continue;
         }
         
-        postGlobleCanPos.push_back(globleCanPos[i]);
+        if ( i % 2 == 0) {
+            postGlobleCanPosArray2.push_back(globleCanPos[i]);
+        }else{
+            postGlobleCanPosArray1.push_back(globleCanPos[i]);
+        }
         
-        float distanceToCenter = sqrt( pow((double)(globleCanPos[i].x - scout.x()), 2.0) + pow((double)(globleCanPos[i].y - scout.y()), 2.0));
+    }
+    
+    for ( unsigned int i = 0; i < postGlobleCanPosArray1.size(); ++ i) {
+        
+        float distanceToCenter = sqrt( pow((double)(postGlobleCanPosArray1[i].x - scout.x()), 2.0) + pow((double)(postGlobleCanPosArray1[i].y - scout.y()), 2.0));
         if ( distanceToCenter < searchLevel3 ) {
-            localCanPosLevel3.push_back(globleCanPos[i]);
+            localCanPosLevel3.push_back(postGlobleCanPosArray1[i]);
             if ( distanceToCenter < searchLevel2 ) {
-                localCanPosLevel2.push_back(globleCanPos[i]);
+                localCanPosLevel2.push_back(postGlobleCanPosArray1[i]);
                 if ( distanceToCenter < searchLevel1) {
-                    localCanPosLevel1.push_back(globleCanPos[i]);
+                    localCanPosLevel1.push_back(postGlobleCanPosArray1[i]);
                 }
             }
         }
     }
     
+    for ( unsigned int i = 0; i < postGlobleCanPosArray2.size(); ++ i) {
+        
+        float distanceToCenter = sqrt( pow((double)(postGlobleCanPosArray2[i].x - scout.x()), 2.0) + pow((double)(postGlobleCanPosArray2[i].y - scout.y()), 2.0));
+        if ( distanceToCenter < searchLevel3 ) {
+            localCanPosLevel3_2.push_back(postGlobleCanPosArray2[i]);
+        }
+    }
+    
     if ( localCanPosLevel1.size() != 0) {
-        utilityDecision(canPosMap, localCanPosLevel1, exploredPolygons, target);
+        utilityDecision(canPosMap, localCanPosLevel1, exploredPolygons, target, true);
         if ( canPosMap.size() != 0) {
             resetTarget = true;
             level1 = true;
-            return;
+            goto display;
         }
     }
     
     if ( localCanPosLevel2.size() != 0) {
-        utilityDecision(canPosMap, localCanPosLevel2, exploredPolygons, target);
+        utilityDecision(canPosMap, localCanPosLevel2, exploredPolygons, target, true);
         if ( canPosMap.size() != 0) {
             resetTarget = true;
             level2 = true;
-            return;
+            goto display;
         }
     }
     
     if ( localCanPosLevel3.size() != 0) {
-        utilityDecision(canPosMap, localCanPosLevel3, exploredPolygons, target);
+        utilityDecision(canPosMap, localCanPosLevel3, exploredPolygons, target, true);
         if ( canPosMap.size() != 0) {
             resetTarget = true;
             level3 = true;
-            return;
+            goto display;
         }
     }
     
-    if ( postGlobleCanPos.size() != 0) {
-        utilityDecision(canPosMap, postGlobleCanPos, exploredPolygons, target);
+    if ( localCanPosLevel3_2.size() != 0) {
+        utilityDecision(canPosMap, localCanPosLevel3_2, exploredPolygons, target, true);
         if ( canPosMap.size() != 0) {
             resetTarget = true;
-            return;
+            level3 = true;
+            goto display;
+        }
+    }
+
+    
+    if ( postGlobleCanPosArray1.size() != 0) {
+        utilityDecision(canPosMap, postGlobleCanPosArray1, exploredPolygons, target, false);
+        if ( canPosMap.size() != 0) {
+            resetTarget = true;
+            goto display;
         }
     }
     
-#if 0
-    printf("visited nodes ----------\n");
-    for ( unsigned int i = 0; i < visitNodes.size(); ++ i) {
-        printf( "Node %u, (%d, %d)", i, visitNodes[i].pos.x, visitNodes[i].pos.y );
+    if ( postGlobleCanPosArray2.size() != 0) {
+        utilityDecision(canPosMap, postGlobleCanPosArray2, exploredPolygons, target, false);
+        if ( canPosMap.size() != 0) {
+            resetTarget = true;
+            goto display;
+        }
     }
-#endif
+    
+display:
+    
+    //float tilePercentage = calculateTilePercentage(exploredMap, scoutBot, target);
+    //float segPercentage  = calculateSegPercentage(exploredMap, scoutBot, target);
+    //float feaPercentage  = calculateFeaPercentage(exploredMap, scoutBot, target);
+    
+    //printf("target - (%d, %d), tile - %f, seg - %f, feature - %f \n", (int)target.x, (int)target.y, tilePercentage, segPercentage, feaPercentage);
+    
     
     //--------debug----------
     debugMesh2.clear();
@@ -220,7 +256,7 @@ void esStrFBMC::calCandidatePosition(ofxTileMap *solidMap, ofxTileMap *dynamicMa
     
 }
 
-void esStrFBMC::utilityDecision(std::map<double, KERNEL::Position> &resoultMap, std::vector<KERNEL::Position> canPosVec, std::set<esPolygon *> exploredPolygons, ofVec2f& target){
+void esStrFBMC::utilityDecision(std::map<double, KERNEL::Position> &resoultMap, std::vector<KERNEL::Position> canPosVec, std::set<esPolygon *> exploredPolygons, ofVec2f& target, bool localSearch){
     
     resoultMap.clear();
     
@@ -246,10 +282,29 @@ void esStrFBMC::utilityDecision(std::map<double, KERNEL::Position> &resoultMap, 
         segExploredUtility = calculateSegPercentage(exploredMap, scoutBot, candidatePos);
         featureExploredUtility = calculateFeaPercentage(exploredMap, scoutBot, candidatePos);
         
-        utilityComponent = 0.4 * tileExploredUtility + 0.4 * segExploredUtility + 0.2 * featureExploredUtility;
-        //utilityComponent = tileExploredUtility;
+       // utilityComponent = 0.4 * tileExploredUtility + 0.4 * segExploredUtility + 0.2 * featureExploredUtility;
         
-        sumEvaluation = alpha * costComponent + beta * utilityComponent;
+        if ( fabs((config.getGrid() + config.getSegment() + config.getFeature()) - 1.0) < 0.002) {
+        
+            utilityComponent = config.getGrid() * tileExploredUtility + config.getSegment() * segExploredUtility + config.getFeature() * featureExploredUtility;
+        
+        }else{
+        
+            utilityComponent = 0.4 * tileExploredUtility + 0.4 * segExploredUtility + 0.2 * featureExploredUtility;
+        
+        }
+
+        
+        if ( localSearch && utilityComponent < 0.2) {
+            continue;
+        }
+        
+        if ( fabs((config.getAlpha() + config.getBeta()) - 1.0) < 0.002 ) {
+            sumEvaluation = config.getAlpha() * costComponent + config.getBeta() * utilityComponent;
+        }else{
+            sumEvaluation = 0.4 * costComponent + 0.6 * utilityComponent;
+        }
+        
         sumEvaluation = -sumEvaluation;
         
         resoultMap.insert(std::pair<double, KERNEL::Position>(sumEvaluation, canPosVec[i]));
@@ -258,7 +313,9 @@ void esStrFBMC::utilityDecision(std::map<double, KERNEL::Position> &resoultMap, 
     
     if ( resoultMap.size() != 0){
         
-        target = ofVec2f((float)resoultMap.begin()->second.x, (float)resoultMap.begin()->second.y);
+        //target = ofVec2f((float)resoultMap.begin()->second.x, (float)resoultMap.begin()->second.y);
+        KERNEL::Position walkableTarget = searchWalkableNeighbor(exploredMap, resoultMap.begin()->second);
+        target = ofVec2f(walkableTarget.x, walkableTarget.y);
         esNode nextTarget;
         nextTarget.pos = KERNEL::Position(resoultMap.begin()->second);
         nextTarget.visitFlag = true;

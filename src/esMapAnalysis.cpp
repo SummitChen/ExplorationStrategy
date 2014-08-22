@@ -31,6 +31,9 @@ esMapAnalysis* esMapAnalysis::getInstance(){
 }
 
 void esMapAnalysis::deleteInstance(){
+    
+    instance->clearData();
+    
     if ( instance != NULL) {
         delete instance;
         instance = NULL;
@@ -114,7 +117,7 @@ void esMapAnalysis::analyzeMap(ofxTileMap* solidMap, ofxTileMap* dynamicMap){
             }
             if ((*it)->getHoles().size() != 0) {
                 for (unsigned int j = 0; j < (*it)->getHoles().size(); ++j) {
-                    for (unsigned int k = 0; k < (*it)->getHoles()[j].pointSet.size(); k += 5) {
+                    for (unsigned int k = 0; k < (*it)->getHoles()[j].pointSet.size(); k ++) {
                         debugmesh.addVertex(ofVec2f((*it)->getHoles()[j].pointSet[k].x,
                                                     (*it)->getHoles()[j].pointSet[k].y));
                     }
@@ -123,7 +126,10 @@ void esMapAnalysis::analyzeMap(ofxTileMap* solidMap, ofxTileMap* dynamicMap){
             }
         }
         
-        printf("Number of polygons is %u\n", account);
+        //-clear-data--------------
+        delete [] walkbilityData;
+        
+        //printf("Number of polygons is %u\n", account);
 
     }
 }
@@ -217,6 +223,10 @@ void esMapAnalysis::analyzeExploredArea(ofxTileMap *dynamicMap){
         for( unsigned int i = 0; i < polygons.size(); i++){
             exploredPolygons.insert(new esPolygon(polygons[i]));
         }
+        
+        //-clear-data--------------
+        delete [] unexploredData;
+        
 #if 0
         //------------debugging---------------------------------
         printf("Analyzed explored polygon size %lu \n", exploredPolygons.size());

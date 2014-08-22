@@ -19,12 +19,14 @@ public:
     
     virtual void debugDraw();
     
+    
 private:
     
     void utilityDecision(std::map<double, KERNEL::Position>& resoultMap,
                          std::vector<KERNEL::Position> canPosVec,
                          std::set<esPolygon*> exploredPolygon,
-                         ofVec2f& target);
+                         ofVec2f& target,
+                         bool  localSearch);
     
     ofxTileMap*      exploredMap;
     float            alpha, beta;

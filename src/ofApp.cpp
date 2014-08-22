@@ -4,6 +4,17 @@
 #include <cstdlib>
 
 
+//-------------------------------------------------------------
+
+ofApp::ofApp(){}
+
+ofApp::~ofApp(){
+    
+    if (settings != NULL) {
+        delete settings;
+        settings = NULL;
+    }
+}
 //--------------------------------------------------------------
 void ofApp::setup(){
     
@@ -66,6 +77,18 @@ void ofApp::update(){
             settingAcount ++;
         }else{
             std::exit(1);
+        }
+        
+        switch (playModel) {
+            case BOT:
+                esBotModel::getInstance()->destroyInstance();
+                break;
+            case BOT_REPLAY:
+                esBotReModel::getInstance()->destroyInstance();
+                break;
+            default:
+                std::exit(1);
+            break;
         }
 
         playModel = settings->getConfigurationSet()[settingAcount].playModel;
@@ -181,64 +204,3 @@ void ofApp::keyPressed(int key){
     }
 }
 
-//------------------------------------------------------------
-/*
- void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult){
- 
- ofLogVerbose("getName(): "  + openFileResult.getName());
- ofLogVerbose("getPath(): "  + openFileResult.getPath());
- 
- ofFile file (openFileResult.getPath());
- 
- if (file.exists()){
- 
- ofLogVerbose("The file exists - now checking the type via file extension");
- string fileExtension = ofToUpper(file.getExtension());
- 
- //We only want images
- if (fileExtension == "JPG" || fileExtension == "PNG") {
- 
- //Save the file extension to use when we save out
- originalFileExtension = fileExtension;
- 
- //printf("%s", openFileResult.getPath().c_str());
- //cout<< openFileResult.getPath()<<std::endl;
- 
- delete routing;
- delete grid_map;
- delete map;
- 
- routing = NULL;
- grid_map = NULL;
- map = NULL;
- 
- 
- ofSetLogLevel(OF_LOG_VERBOSE);
- ofEnableAlphaBlending();
- ofSetFrameRate(60);
- 
- map = new ofxTileMap(openFileResult.getName());
- grid_map = new ofxTileMap(map->getWidth(), map->getHeight());
- routing = new ofxMapRouting( map, false );
- 
- ofSetWindowShape(map->getWidth(), map->getHeight());
- ofSetWindowPosition(12, 12);
- 
- origin.x = map->getWidth()/2;
- origin.y = map->getHeight()/2 - 5;
- 
- while ( map->getTileSafe( origin.x, origin.y) != WALKABLE) {
- origin.x = rand() % map->getWidth();
- origin.y = rand() % map->getHeight();
- }
- 
- scout = Robot( origin, 1.0, 40);
- reset_original = true;
- 
- update_map_status();
- select_next_pos();
- 
- }
- }
- }
- */

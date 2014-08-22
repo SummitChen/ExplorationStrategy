@@ -25,12 +25,12 @@ void esStrGridbased::calCandidatePosition(ofxTileMap* solidMap, ofxTileMap* dyna
     double             sumEvaluation = 0.0;
     double             costComponent = 0.0;
     double             tileExploredUtility = 0.0;
-    double             SegExploredUtility = 0.0;
-    double             FeaExploredUtility = 0.0;
-    double             utitlyComponent = 0.0;
+    double             segExploredUtility = 0.0;
+    double             feaExploredUtility = 0.0;
+    double             utilityComponent = 0.0;
     
-    float              alpha = 0.4;
-    float              beta  = 0.6;
+    float              alpha = 0.3;
+    float              beta  = 0.7;
     KERNEL::Position   scoutLocation = KERNEL::Position(scout.x(), scout.y());
     bool               repeatFlag = false;
     
@@ -67,14 +67,25 @@ void esStrGridbased::calCandidatePosition(ofxTileMap* solidMap, ofxTileMap* dyna
             costComponent = exp( scout.getRadius() - travelDistance);
             
             tileExploredUtility = calculateTilePercentage( dynamicMap, scout, candidatePos);
-            SegExploredUtility = calculateSegPercentage(dynamicMap, scout, candidatePos);
-            FeaExploredUtility = calculateFeaPercentage(dynamicMap, scout, candidatePos);
+            segExploredUtility = calculateSegPercentage(dynamicMap, scout, candidatePos);
+            feaExploredUtility = calculateFeaPercentage(dynamicMap, scout, candidatePos);
             
-            utitlyComponent = 0.4 * tileExploredUtility + 0.4 * SegExploredUtility + 0.2 * FeaExploredUtility;
+            if ( fabs((config.getGrid() + config.getSegment() + config.getFeature()) - 1.0) < 0.002) {
+                
+                utilityComponent = config.getGrid() * tileExploredUtility + config.getSegment() * segExploredUtility + config.getFeature() * feaExploredUtility;
+                
+            }else{
+                
+                utilityComponent = 0.4 * tileExploredUtility + 0.4 * segExploredUtility + 0.2 * feaExploredUtility;
+                
+            }
             
-            sumEvaluation = alpha * costComponent + beta * utitlyComponent;
-            //
-            sumEvaluation = utitlyComponent;
+            if ( fabs((config.getAlpha() + config.getBeta()) - 1.0) < 0.002 ) {
+                sumEvaluation = config.getAlpha() * costComponent + config.getBeta() * utilityComponent;
+            }else{
+                sumEvaluation = 0.4 * costComponent + 0.6 * utilityComponent;
+            }
+            
             sumEvaluation = -sumEvaluation;
             
             candidatePosMap.insert(std::pair<double, ofVec2f>( sumEvaluation, candidatePos));

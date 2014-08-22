@@ -39,6 +39,16 @@ void ofEsSettings::load(string pathName){
                     configIt.sight     = XML.getValue<int>("SIGHT");
                     configIt.speed     = XML.getValue<float>("SPEED");
                     
+                    if( XML.exists("ALGORITHMCONFIG")){
+                        XML.setTo("ALGORITHMCONFIG");
+                        configIt.configHFrontier.setGrid(XML.getValue<float>("GRID"));
+                        configIt.configHFrontier.setSegment(XML.getValue<float>("SEGMENT"));
+                        configIt.configHFrontier.setFeature(XML.getValue<float>("FEATURE"));
+                        configIt.configHFrontier.setAlpha(XML.getValue<float>("ALPHA"));
+                        configIt.configHFrontier.setBeta(XML.getValue<float>("BETA"));
+                        XML.setToParent();
+                    }
+                    
                     unsigned int repeatTime = 1;
                     
                     for (unsigned int i = 0; i < repeatTime; ++i) {

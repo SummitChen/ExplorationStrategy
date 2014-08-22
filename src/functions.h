@@ -8,7 +8,7 @@
 //#define DEBUG_DRAW 1
 //#define DRAW_COLOR 1
 #include <iostream>
-//#include <boost/format.hpp>
+#include <boost/format.hpp>
 //#include <CGAL/MP_Float.h>
 //#include <CGAL/Quotient.h>
 #include <vector>

@@ -1,110 +1,66 @@
 <SETTINGS>
     <CONFIGURATION>
         <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
-        <DURATION>800000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap8_1_2.XML</LOGPATH>
-        <MAP>Map8.png</MAP>
-        <STRATEGY>FBMC</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
+        <DURATION>50000</DURATION> <!--Unit: second -->
+        <LOGPATH>data/recordMap5_1.XML</LOGPATH> <!--RecondName + MapNumber + "_" + StrategyNumber-->
+        <MAP>Map5.png</MAP>
+        <STRATEGY>FBMC</STRATEGY> <!-- FBMC: H-Frontier Frontierbased: Frontier Gridbased: Visual Random: Random-->
+        <SIGHT>40</SIGHT>   <!-- Sight Range -->
+        <SPEED>240</SPEED>  <!-- pixels per second-->
+        <ALGORITHMCONFIG>
+            <GRID>0.5</GRID>
+            <SEGMENT>0.3</SEGMENT>
+            <FEATURE>0.2</FEATURE>
+            <ALPHA>0.3</ALPHA>
+            <BETA>0.7</BETA>
+        </ALGORITHMCONFIG>
     </CONFIGURATION>
     <CONFIGURATION>
         <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
         <DURATION>50000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap8_1_4.XML</LOGPATH>
-        <MAP>Map8.png</MAP>
-        <STRATEGY>Gridbased</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
+        <LOGPATH>recordMap5_2.XML</LOGPATH>
+        <MAP>Map5.png</MAP>
+        <STRATEGY>Frontierbased</STRATEGY> <!-- FBMC: H-Frontier Frontierbased: Frontier Gridbased: Visual Random: Random-->
+        <SIGHT>30</SIGHT>   <!-- Sight Range -->
+        <SPEED>120</SPEED>  <!-- pixels per second-->
+        <ALGORITHMCONFIG>
+            <GRID>0.4</GRID>
+            <SEGMENT>0.4</SEGMENT>
+            <FEATURE>0.2</FEATURE>
+            <ALPHA>0.3</ALPHA>
+            <BETA>0.7</BETA>
+        </ALGORITHMCONFIG>
     </CONFIGURATION>
     <CONFIGURATION>
         <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
         <DURATION>50000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap8_1_1.XML</LOGPATH>
-        <MAP>Map8.png</MAP>
-        <STRATEGY>Frontierbased</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
+        <LOGPATH>recordMap5_3.XML</LOGPATH>
+        <MAP>Map5.png</MAP>
+        <STRATEGY>Gridbased</STRATEGY> <!-- FBMC: H-Frontier Frontierbased: Frontier Gridbased: Visual Random: Random-->
+        <SIGHT>30</SIGHT>   <!-- Sight Range -->
+        <SPEED>150</SPEED>  <!-- pixels per second-->
+        <ALGORITHMCONFIG>
+            <GRID>0.4</GRID>
+            <SEGMENT>0.4</SEGMENT>
+            <FEATURE>0.2</FEATURE>
+            <ALPHA>0.3</ALPHA>
+            <BETA>0.7</BETA>
+        </ALGORITHMCONFIG>
     </CONFIGURATION>
     <CONFIGURATION>
         <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
         <DURATION>50000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap8_1_3.XML</LOGPATH>
-        <MAP>Map8.png</MAP>
-        <STRATEGY>Random</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
-    </CONFIGURATION>
-    <CONFIGURATION>
-        <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
-        <DURATION>600000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap7_1_1.XML</LOGPATH>
-        <MAP>Map7.png</MAP>
-        <STRATEGY>Frontierbased</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
-    </CONFIGURATION>
-    <CONFIGURATION>
-        <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
-        <DURATION>600000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap7_1_2.XML</LOGPATH>
-        <MAP>Map7.png</MAP>
-        <STRATEGY>FBMC</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
-    </CONFIGURATION>
-    <CONFIGURATION>
-        <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
-        <DURATION>600000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap7_1_3.XML</LOGPATH>
-        <MAP>Map7.png</MAP>
-        <STRATEGY>Random</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
-    </CONFIGURATION>
-    <CONFIGURATION>
-        <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
-        <DURATION>600000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap7_1_4.XML</LOGPATH>
-        <MAP>Map7.png</MAP>
-        <STRATEGY>Gridbased</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
-    </CONFIGURATION>
-    <CONFIGURATION>
-        <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
-        <DURATION>600000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap6_1_1.XML</LOGPATH>
-        <MAP>Map6.png</MAP>
-        <STRATEGY>Frontierbased</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
-    </CONFIGURATION>
-    <CONFIGURATION>
-        <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
-        <DURATION>600000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap6_1_2.XML</LOGPATH>
-        <MAP>Map6.png</MAP>
-        <STRATEGY>FBMC</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
-    </CONFIGURATION>
-    <CONFIGURATION>
-        <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
-        <DURATION>600000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap6_1_3.XML</LOGPATH>
-        <MAP>Map6.png</MAP>
-        <STRATEGY>Random</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
-    </CONFIGURATION>
-    <CONFIGURATION>
-        <PLAYMODEL>0</PLAYMODEL> <!--BOT:0, BOTRE: 1-->
-        <DURATION>600000</DURATION> <!--Unit: second -->
-        <LOGPATH>recordMap6_1_4.XML</LOGPATH>
-        <MAP>Map6.png</MAP>
-        <STRATEGY>Gridbased</STRATEGY>
-        <SIGHT>40</SIGHT>
-        <SPEED>3.6</SPEED>
+        <LOGPATH>recordMap5_4.XML</LOGPATH>
+        <MAP>Map5.png</MAP>
+        <STRATEGY>Random</STRATEGY> <!-- FBMC: H-Frontier Frontierbased: Frontier Gridbased: Visual Random: Random-->
+        <SIGHT>30</SIGHT>   <!-- Sight Range -->
+        <SPEED>150</SPEED>  <!-- pixels per second-->
+        <ALGORITHMCONFIG>
+            <GRID>0.4</GRID>
+            <SEGMENT>0.4</SEGMENT>
+            <FEATURE>0.2</FEATURE>
+            <ALPHA>0.3</ALPHA>
+            <BETA>0.7</BETA>
+        </ALGORITHMCONFIG>
     </CONFIGURATION>
 </SETTINGS>
