@@ -1,0 +1,8 @@
+ofxThreadedImageLoader
+ofxVectorGraphics
+ofxXmlSettings
+ofxMapRouting
+ofxMSAInteractiveObject
+ofxPathfinder
+ofxSimpleGuiToo
+ofxTimeMeasurements
